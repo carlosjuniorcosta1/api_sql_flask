@@ -16,13 +16,16 @@ dados_conexao = (
 conexao = pyodbc.connect(dados_conexao)
 cursor = conexao.cursor()
 
-
-
 cursor.commit()
 
 teste_q = cursor.execute('SELECT * FROM Vendas')
 teste_q = teste_q.fetchall()
-print(teste_q)
+for x in teste_q:
+    for y in x:
+        print(y)
+
+
+
 
 @app.route('/produtos', methods = ['GET'])
 def obter_livros():
@@ -48,8 +51,16 @@ def adicionar_produto():
     cursor.execute(f"INSERT INTO Vendas (id, cliente, produto) VALUES ({id_cliente}, '{cliente}', '{produto}')")
     cursor.commit()
     return jsonify(
-        message = "Produto cadastro com sucesso"
+        message = "Produto cadastrado com sucesso"
     )
+
+@app.route('/produtos/<id_linha>', methods = ['DELETE'])
+def deletar_dado(id_linha):
+    db = cursor.execute(f"DELETE FROM Vendas WHERE id=?", (id_linha))
+    cursor.commit()
+    return jsonify(message = "Item deletado")
+
+
 
 #roda o app  
 app.run(debug=True)
